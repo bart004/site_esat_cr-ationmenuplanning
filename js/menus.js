@@ -1,6 +1,6 @@
 (function () {
   const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"];
-  const CATEGORIES = ["Entrée", "Plat", "Accompagnement", "Dessert"];
+  const CATEGORIES = ["Entrée", "Plat", "Accompagnement", "Fromage", "Dessert"];
 
   const navToggle = document.querySelector(".nav-toggle");
   const siteNav = document.querySelector("#siteNav");
