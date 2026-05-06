@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESAT APAJH 94 - Atelier Menus</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="menus-page">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">ESAT APAJH 94</a>
+      <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+      <nav class="site-nav" id="siteNav">
+        <a href="index.html">Accueil</a>
+        <a class="active" href="menus.html">Atelier Menus</a>
+        <a href="planning.html">Atelier Planning</a>
+        <a href="videos.html">Vidéos tuto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page-main">
+    <h1>Atelier menus hebdomadaires</h1>
+
+    <div class="toolbar no-print">
+      <label for="weekDate">Semaine du :</label>
+      <input id="weekDate" type="date">
+      <button id="toggleModeBtn" class="btn btn-blue">✏️ Mode Édition</button>
+      <button id="exportCsvBtn" class="btn btn-green">⬇️ Exporter CSV</button>
+      <button id="printBtn" class="btn btn-green">🖨️ Imprimer</button>
+    </div>
+
+    <div id="printTitle" class="print-title"></div>
+
+    <div class="table-wrap">
+      <table class="menu-table" id="menuTable">
+        <thead>
+          <tr>
+            <th class="category-col">Catégories</th>
+            <th><div class="day-name">Lundi</div><div class="day-date" data-day-date="0">--/--</div></th>
+            <th><div class="day-name">Mardi</div><div class="day-date" data-day-date="1">--/--</div></th>
+            <th><div class="day-name">Mercredi</div><div class="day-date" data-day-date="2">--/--</div></th>
+            <th><div class="day-name">Jeudi</div><div class="day-date" data-day-date="3">--/--</div></th>
+            <th><div class="day-name">Vendredi</div><div class="day-date" data-day-date="4">--/--</div></th>
+          </tr>
+        </thead>
+        <tbody id="menuBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>Adresse : 41 rue Le-Corbusier — 94000 CRÉTEIL</p>
+      <p>Tél. : 01 45 13 14 50 | Fax : 01 45 13 14 59 | Mail : apajh94@apajh94.fr</p>
+      <p>Copyright © 2025 ESAT APAJH 94</p>
+    </div>
+  </footer>
+
+  <script src="js/menus.js"></script>
+</body>
+</html>

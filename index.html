@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESAT APAJH 94 - Accueil</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">ESAT APAJH 94</a>
+      <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+      <nav class="site-nav" id="siteNav">
+        <a class="active" href="index.html">Accueil</a>
+        <a href="menus.html">Atelier Menus</a>
+        <a href="planning.html">Atelier Planning</a>
+        <a href="videos.html">Vidéos tuto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Bienvenue à l'ESAT APAJH 94</h1>
+        <p class="hero-subtitle">Établissement et Service d'Aide par le Travail — Créteil</p>
+        <p class="hero-text">
+          L'ESAT APAJH 94 accompagne les travailleurs en situation de handicap dans des activités
+          professionnelles adaptées, en favorisant l'autonomie, l'inclusion et la valorisation des
+          compétences au quotidien.
+        </p>
+      </div>
+    </section>
+
+    <section class="workshops container">
+      <h2>Nos ateliers</h2>
+      <div class="cards-grid">
+        <a class="workshop-card" href="menus.html" aria-label="Atelier Générateur de menus hebdomadaires">
+          <div class="card-image gradient-green">
+            <img class="card-picto" src="Picto/aliment.png" alt="Pictogramme menu">
+          </div>
+          <div class="card-content">
+            <span class="badge">Atelier</span>
+            <h3>Générateur de menus hebdomadaires</h3>
+            <p>Créez et saisissez les menus de la semaine pour la restauration collective.</p>
+          </div>
+        </a>
+
+        <a class="workshop-card" href="planning.html" aria-label="Atelier Générateur de planning hebdomadaire">
+          <div class="card-image gradient-blue">
+            <img class="card-picto" src="Picto/calendrier.png" alt="Pictogramme planning">
+          </div>
+          <div class="card-content">
+            <span class="badge">Atelier</span>
+            <h3>Générateur de planning hebdomadaire</h3>
+            <p>Planifiez et organisez les activités hebdomadaires des travailleurs.</p>
+          </div>
+        </a>
+
+        <a class="workshop-card" href="videos.html" aria-label="Atelier Vidéos tutoriels">
+          <div class="card-image gradient-red">
+            <img class="card-picto" src="Picto/vidéo en ligne.png" alt="Pictogramme vidéos">
+          </div>
+          <div class="card-content">
+            <span class="badge">Atelier</span>
+            <h3>Vidéos tutoriels explicatives</h3>
+            <p>Consultez les vidéos d'aide pour apprendre à utiliser les outils de l'ESAT.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>Adresse : 41 rue Le-Corbusier — 94000 CRÉTEIL</p>
+      <p>Tél. : 01 45 13 14 50 | Fax : 01 45 13 14 59 | Mail : apajh94@apajh94.fr</p>
+      <p>Copyright © 2025 ESAT APAJH 94</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const toggle = document.querySelector(".nav-toggle");
+      const nav = document.querySelector("#siteNav");
+      if (!toggle || !nav) return;
+      toggle.addEventListener("click", function () {
+        const isOpen = nav.classList.toggle("open");
+        toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      });
+    })();
+  </script>
+</body>
+</html>
