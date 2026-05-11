@@ -20,41 +20,48 @@
     return;
   }
 
-  let currentWeek = getCurrentWeek();
+  let currentMonday = getMonday(new Date());
   let state = createEmptyState();
 
-  function getCurrentWeek() {
-    const now = new Date();
-    return isoWeekString(now);
+  function pad(num) {
+    return String(num).padStart(2, "0");
   }
 
-  function isoWeekString(date) {
+  function getIsoWeek(date) {
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     const day = d.getUTCDay() || 7;
     d.setUTCDate(d.getUTCDate() + 4 - day);
     const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
     const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    return d.getUTCFullYear() + "-W" + String(weekNo).padStart(2, "0");
+    return { year: d.getUTCFullYear(), week: weekNo };
   }
 
-  function mondayFromWeek(weekStr) {
-    const parts = weekStr.split("-W");
-    const year = Number(parts[0]);
-    const week = Number(parts[1]);
-    const simple = new Date(year, 0, 1 + (week - 1) * 7);
-    const day = simple.getDay();
-    const monday = new Date(simple);
-    if (day <= 4) {
-      monday.setDate(simple.getDate() - simple.getDay() + 1);
-    } else {
-      monday.setDate(simple.getDate() + 8 - simple.getDay());
-    }
-    monday.setHours(0, 0, 0, 0);
-    return monday;
+  function weekKeyFromMonday(monday) {
+    const iso = getIsoWeek(monday);
+    return "planning_" + iso.year + "-W" + String(iso.week).padStart(2, "0");
+  }
+
+  function getMonday(date) {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    const day = d.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    d.setDate(d.getDate() + diff);
+    return d;
+  }
+
+  function mondayFromInputDate(value) {
+    if (!value) return getMonday(new Date());
+    const date = new Date(value + "T00:00:00");
+    return getMonday(date);
+  }
+
+  function inputValueFromMonday(monday) {
+    return monday.getFullYear() + "-" + pad(monday.getMonth() + 1) + "-" + pad(monday.getDate());
   }
 
   function formatDateFR(date) {
-    return String(date.getDate()).padStart(2, "0") + "/" + String(date.getMonth() + 1).padStart(2, "0");
+    return pad(date.getDate()) + "/" + pad(date.getMonth() + 1);
   }
 
   function createEmptyActivity() {
@@ -73,7 +80,7 @@
   }
 
   function storageKey() {
-    return "planning_" + currentWeek;
+    return weekKeyFromMonday(currentMonday);
   }
 
   function save() {
@@ -129,7 +136,7 @@
       col.appendChild(buildAddActivityButton(dayIdx));
     });
 
-    const monday = mondayFromWeek(currentWeek);
+    const monday = new Date(currentMonday);
     const friday = new Date(monday);
     friday.setDate(monday.getDate() + 4);
     printTitle.textContent = "Planning de la semaine du " + formatDateFR(monday) + " au " + formatDateFR(friday) + " — ESAT APAJH 94";
@@ -163,10 +170,10 @@
     });
     card.appendChild(deleteBtn);
 
-    const picLabel = document.createElement("label");
+    /*const picLabel = document.createElement("label");
     picLabel.className = "activity-label";
     picLabel.textContent = "Pictogramme de l'activité :";
-    card.appendChild(picLabel);
+    card.appendChild(picLabel);*/
 
     const fileRow = document.createElement("div");
     fileRow.className = "file-row";
@@ -300,13 +307,13 @@
   });
 
   weekInput.addEventListener("change", function () {
-    if (!weekInput.value) return;
-    currentWeek = weekInput.value;
+    currentMonday = mondayFromInputDate(weekInput.value);
+    weekInput.value = inputValueFromMonday(currentMonday);
     load();
     render();
   });
 
-  weekInput.value = currentWeek;
+  weekInput.value = inputValueFromMonday(currentMonday);
   load();
   render();
 })();
