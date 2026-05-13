@@ -20,6 +20,239 @@
     return;
   }
 
+  // ─── COLOR THEME ────────────────────────────────────────────────────────────
+
+  const COLOR_STORAGE_KEY = "planning_colors";
+
+  const DEFAULT_COLORS = {
+    headerBg: "#c8a882",       // Beige/brun de l'en-tête des colonnes jours
+    headerText: "#ffffff",     // Texte des en-têtes jours
+    cardBg: "#f5ede0",         // Fond des cartes activité
+    cardBorder: "#c8a882",     // Bordure des cartes
+    activityTitle: "#4a2f00",  // Titre de l'activité (NOM DE L'ACTIVITÉ)
+    activityMeta: "#5a4030",   // Horaires / lieu
+    participantText: "#333333",// Texte participants
+    tableBg: "#ffffff",        // Fond du tableau global
+    titleBg: "#c8a882",        // Fond de la ligne de titre du planning (semaine)
+    titleText: "#ffffff",      // Texte du titre de la semaine
+  };
+
+  let colors = loadColors();
+
+  function loadColors() {
+    try {
+      const raw = localStorage.getItem(COLOR_STORAGE_KEY);
+      if (!raw) return Object.assign({}, DEFAULT_COLORS);
+      return Object.assign({}, DEFAULT_COLORS, JSON.parse(raw));
+    } catch (_) {
+      return Object.assign({}, DEFAULT_COLORS);
+    }
+  }
+
+  function saveColors() {
+    localStorage.setItem(COLOR_STORAGE_KEY, JSON.stringify(colors));
+  }
+
+  function applyColors() {
+    const root = document.documentElement;
+    root.style.setProperty("--planning-header-bg", colors.headerBg);
+    root.style.setProperty("--planning-header-text", colors.headerText);
+    root.style.setProperty("--planning-card-bg", colors.cardBg);
+    root.style.setProperty("--planning-card-border", colors.cardBorder);
+    root.style.setProperty("--planning-activity-title", colors.activityTitle);
+    root.style.setProperty("--planning-activity-meta", colors.activityMeta);
+    root.style.setProperty("--planning-participant-text", colors.participantText);
+    root.style.setProperty("--planning-table-bg", colors.tableBg);
+    root.style.setProperty("--planning-title-bg", colors.titleBg);
+    root.style.setProperty("--planning-title-text", colors.titleText);
+  }
+
+  // ─── COLOR PANEL ────────────────────────────────────────────────────────────
+
+  function buildColorPanel() {
+    // Inject required CSS variables into a style tag if not already present
+    if (!document.getElementById("planning-color-vars")) {
+      const style = document.createElement("style");
+      style.id = "planning-color-vars";
+      style.textContent = `
+      /* Color Panel Styles */
+      #colorPanel {
+        background: #fff;
+        border: 2px solid var(--planning-header-bg);
+        border-radius: 10px;
+        padding: 18px 22px;
+        margin: 12px 0;
+        font-family: inherit;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+      }
+      #colorPanel summary {
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        color: var(--planning-activity-title);
+        user-select: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      #colorPanel summary::marker { display: none; }
+      #colorPanel summary::-webkit-details-marker { display: none; }
+      .color-panel-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px 20px;
+        margin-top: 16px;
+      }
+      .color-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .color-row label {
+        flex: 1;
+        font-size: 0.88rem;
+        color: #444;
+        line-height: 1.3;
+      }
+      .color-row input[type="color"] {
+        width: 38px;
+        height: 30px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 2px;
+        cursor: pointer;
+        background: none;
+        flex-shrink: 0;
+      }
+      .color-panel-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+      .color-panel-actions button {
+        padding: 7px 18px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: opacity 0.15s;
+      }
+      .color-panel-actions button:hover { opacity: 0.8; }
+      #applyColorsBtn {
+        background: var(--planning-header-bg);
+        color: #fff;
+      }
+      #resetColorsBtn {
+        background: #eee;
+        color: #555;
+      }
+      @media print {
+        #colorPanel { display: none !important; }
+      }
+    `;
+      
+      document.head.appendChild(style);
+    }
+
+    const colorDefs = [
+      { key: "headerBg",        label: "Fond en-tête des jours" },
+      { key: "headerText",      label: "Texte en-tête des jours" },
+      { key: "titleBg",         label: "Fond barre de titre semaine" },
+      { key: "titleText",       label: "Texte barre de titre semaine" },
+      { key: "cardBg",          label: "Fond des cartes activité" },
+      { key: "cardBorder",      label: "Bordure des cartes" },
+      { key: "activityTitle",   label: "Titre de l'activité" },
+      { key: "activityMeta",    label: "Horaires / Lieu" },
+      { key: "participantText", label: "Texte participants" },
+      { key: "tableBg",         label: "Fond du tableau" },
+    ];
+
+    const details = document.createElement("details");
+    details.id = "colorPanel";
+    details.className = "no-print";
+
+    const summary = document.createElement("summary");
+    summary.innerHTML = "🎨 Personnaliser les couleurs";
+    details.appendChild(summary);
+
+    const grid = document.createElement("div");
+    grid.className = "color-panel-grid";
+
+    colorDefs.forEach(function (def) {
+      const row = document.createElement("div");
+      row.className = "color-row";
+
+      const lbl = document.createElement("label");
+      lbl.textContent = def.label;
+
+      const picker = document.createElement("input");
+      picker.type = "color";
+      picker.value = colors[def.key];
+      picker.dataset.key = def.key;
+      picker.title = def.label;
+      picker.addEventListener("input", function () {
+        colors[def.key] = picker.value;
+      });
+
+      row.appendChild(lbl);
+      row.appendChild(picker);
+      grid.appendChild(row);
+    });
+
+    details.appendChild(grid);
+
+    const actions = document.createElement("div");
+    actions.className = "color-panel-actions";
+
+    const applyBtn = document.createElement("button");
+    applyBtn.id = "applyColorsBtn";
+    applyBtn.type = "button";
+    applyBtn.textContent = "✔ Appliquer";
+    applyBtn.addEventListener("click", function () {
+      saveColors();
+      applyColors();
+    });
+
+    const resetBtn = document.createElement("button");
+    resetBtn.id = "resetColorsBtn";
+    resetBtn.type = "button";
+    resetBtn.textContent = "↺ Réinitialiser";
+    resetBtn.addEventListener("click", function () {
+      colors = Object.assign({}, DEFAULT_COLORS);
+      saveColors();
+      applyColors();
+      // Update pickers
+      details.querySelectorAll("input[type=color]").forEach(function (picker) {
+        picker.value = colors[picker.dataset.key];
+      });
+    });
+
+    actions.appendChild(applyBtn);
+    actions.appendChild(resetBtn);
+    details.appendChild(actions);
+
+    return details;
+  }
+
+  // Insert the color panel just before the planning columns container
+  function insertColorPanel() {
+    const panel = buildColorPanel();
+    // Try to insert before the planning grid/table; fallback: before first column's parent
+    const grid = columns[0] && columns[0].closest(".planning-grid, .planning-table, table, [class*='planning']");
+    const target = grid || (columns[0] && columns[0].parentElement);
+    if (target && target.parentElement) {
+      target.parentElement.insertBefore(panel, target);
+    } else {
+      // Last resort: append after the toolbar area
+      const toolbar = weekInput.closest("div, nav, header, section") || document.body;
+      toolbar.appendChild(panel);
+    }
+  }
+
+  // ─── ORIGINAL LOGIC (unchanged) ────────────────────────────────────────────
+
   let currentMonday = getMonday(new Date());
   let state = createEmptyState();
 
@@ -170,11 +403,6 @@
     });
     card.appendChild(deleteBtn);
 
-    /*const picLabel = document.createElement("label");
-    picLabel.className = "activity-label";
-    picLabel.textContent = "Pictogramme de l'activité :";
-    card.appendChild(picLabel);*/
-
     const fileRow = document.createElement("div");
     fileRow.className = "file-row";
     const fileInput = document.createElement("input");
@@ -253,10 +481,10 @@
   }
 
   function buildInput(placeholder, value, onInput) {
-    const input = document.createElement("input");
-    input.type = "text";
+    const input = document.createElement("textarea");
     input.placeholder = placeholder;
     input.value = value || "";
+    input.rows = 2;
     input.addEventListener("input", function (e) {
       onInput(e.target.value);
     });
@@ -313,7 +541,11 @@
     render();
   });
 
+  // ─── INIT ───────────────────────────────────────────────────────────────────
+
   weekInput.value = inputValueFromMonday(currentMonday);
   load();
+  insertColorPanel();
+  applyColors();
   render();
 })();
