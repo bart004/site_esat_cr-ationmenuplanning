@@ -4,6 +4,16 @@
   --page-bg: #f8f9fa;
   --border: #dee2e6;
   --text: #111827;
+  --planning-header-bg: #c8a882;
+  --planning-header-text: #ffffff;
+  --planning-card-bg: #f5ede0;
+  --planning-card-border: #c8a882;
+  --planning-activity-title: #4a2f00;
+  --planning-activity-meta: #5a4030;
+  --planning-participant-text: #333333;
+  --planning-table-bg: #ffffff;
+  --planning-title-bg: #c8a882;
+  --planning-title-text: #ffffff;
 }
 
 * {
@@ -301,12 +311,15 @@ input[type="text"] {
 }
 
 .menu-table,
-.planning-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.planning-table th {
+  background: var(--planning-header-bg);
+  color: var(--planning-header-text);
+  border-bottom: 3px solid #111827;
+  border-top: 1px solid #e5e7eb;
+  border-left: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  padding: 12px;
+  font-weight: 800;
 }
 
 .menus-page .menu-table {
@@ -467,8 +480,8 @@ input[type="text"] {
 }
 
 .planning-table th {
-  background: #fff;
-  color: #111827;
+  background: var(--planning-header-bg);
+  color: var(--planning-header-text);
   border-bottom: 3px solid #111827;
   border-top: 1px solid #e5e7eb;
   border-left: 1px solid #e5e7eb;
@@ -502,8 +515,8 @@ input[type="text"] {
 }
 
 .activity-card {
-  background: #fff;
-  border: 1px solid #d1d5db;
+  background: var(--planning-card-bg);
+  border: 1px solid var(--planning-card-border);
   border-radius: 8px;
   padding: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -665,6 +678,14 @@ input[type="text"] {
   .planning-table {
     box-shadow: none;
     width: 100%;
+    background: var(--planning-table-bg);
+  }
+
+  #planningPrintTitle {
+    background: var(--planning-title-bg);
+    color: var(--planning-title-text);
+    padding: 8px 12px;
+    border-radius: 6px;
   }
 
   .menu-table th {
